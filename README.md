@@ -40,7 +40,8 @@
 ## What This Does
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
-
+The FitFindr helps find what clothing item / accessory the shopper is looking for and what other nice fit would go with it.
+To start, the shopper describes their clothing item with details like color, style, size, and price preference. The FitFindr would then find that clothing item for them from the clothing listings and find another clothing article that can go with it. 
 
 
 ---
