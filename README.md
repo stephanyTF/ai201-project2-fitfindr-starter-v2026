@@ -66,7 +66,7 @@ To start, the shopper describes their clothing item with details like color, sty
      - `size` (str)
      - `max_price` (float)
 - **Returns:**
-    -  A list of matching listing dicts, best match first
+    -  A list of matching listing dicts of clothing item, best match first
 - **When it has nothing:**
      - an empty list
 
@@ -107,13 +107,16 @@ To start, the shopper describes their clothing item with details like color, sty
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
+**Branch rule:** If `search_listings` returns an empty list, put a message in the `session[“error”]` saying what the shopper could change then stop the loop from calling `suggest_outfit`. Otherwise take the first result and go to `suggest_outfit`. 
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:** Regex is the easiest to separate the query into item description and the other optional fields (size and max_price if given) because it can be done without a model call. However it's incapable of handling varied phrasing like "under $30" since there's no explicit phrase in the listing that compares eventhough there are prices under $30. To accomodate, potentially there could be a regex match for phrases similar to those and set a condition to filter items by the preferred price.
 
 **What moves through the session:** <!-- which fields, in what order -->
+     1. `search_results` are returned in the session["search_results"] and if not empty, given to `suggest_outfit`
+     2. Take the first item of the list (session["search_results"][0]) and save it as session["selected_item"]
+
 
 ---
 
