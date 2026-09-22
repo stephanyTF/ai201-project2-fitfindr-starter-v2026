@@ -25,9 +25,7 @@ Given a query that matches at least one listing, the agent completes all three
 tool calls and returns a fit card — in at least 4 of 5 tries.
 
 **Why this target:**
-<!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
-     "my search is a plain keyword match and some phrasings will miss" is a
-     real answer. -->
+Ensures the system is able to correctly deliver the process that is expected of it when there is a valid item found that matches the query.
 
 ---
 
@@ -37,8 +35,7 @@ Given a query that matches no listings, the agent stops before calling
 `suggest_outfit` and returns a message naming what to change — 5 of 5 tries.
 
 **Why this target:**
-<!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
-     about this path? -->
+5 out of 5 passing is a valid target because it should be a simple case to handle when a query has no matching listing. An empty list should always be returned and thus recognized by the system to catch and prevent from passing on to the second tool. 
 
 ---
 
@@ -54,15 +51,18 @@ Given a query that matches no listings, the agent stops before calling
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
 
+     For 5 out of the 5 runs, the `id` in session["selected_item"] equals the `id` of the first entry in session["search_results"] as well as ensuring the `title` from the session["selected_item"] is in the suggest_outfit's output. 
+
 
 
 **Why this target:**
+Ensures the system is making suggestion on the correct best matching item. Needs perfect runs else there is a signfiicant bug that needs to be fixed. 
 
 
 
 ---
 
-## 4. Something about the fit card
+## 4. Fit Card Caption is Unique and True 
 
 <!-- YOU WRITE THIS ONE.
 
@@ -75,15 +75,19 @@ Given a query that matches no listings, the agent stops before calling
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
 
+     4 out of 5 runs the relevant caption should be unique each run (not word for word) and still relevant to the fit (title, style, size, platform, price etc). Any stylish words that aren't related to the suggested outfit shouldn't be included. 
+
+
+
 
 
 **Why this target:**
-
+   It should also come out differently for different inputs and have some variance even for the same item since postings are usually creative and unique to the item. It's 4/5 to add in some variability since the model's output can't always be expected.
 
 
 ---
 
-## 5. Your choice
+## 5. The Outfit is Fit for the Budget
 
 <!-- YOU WRITE THIS ONE TOO.
 
@@ -91,11 +95,11 @@ Given a query that matches no listings, the agent stops before calling
      wardrobe path, what happens when the model can't be reached, whether the
      search respects a price ceiling — anything, as long as it names a number
      or an observable outcome. -->
-
-
+     
+     For 4/5 runs, the suggested clothes should be under the user's max price limit.
 
 **Why this target:**
-
+     It defeats the purpose of thrifting if you end up having to buy something out of your budget. By ensuring the shopper can trust they can find their right fit for the right price, makes the system valuable to them. Hence, that's why it should be 4 out 5 to have the most accuracy but also some room for misses since not all clothes can fit the shopper's taste and price.
 
 
 ---
