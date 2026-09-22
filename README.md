@@ -60,24 +60,37 @@ To start, the shopper describes their clothing item with details like color, sty
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
+- **What it does:**: It searches the listings for items the shopper is searching for along with possible filters like size and prices under the max limit.
+- **Inputs:** 
+     - `description` (str)
+     - `size` (str)
+     - `max_price` (float)
 - **Returns:**
+    -  A list of matching listing dicts, best match first
 - **When it has nothing:**
+     - an empty list
 
 ### `suggest_outfit`
 
-- **What it does:**
+- **What it does:** Recommend one or two outfits based on a thrifted item and the shopper's wardrobe
 - **Inputs:**
+     - `new_item` (dict)
+     - `wardrobe` (dict)
 - **Returns:**
+     - A non-empty string with outfit suggestions.
 - **When it has nothing:**
+     - When the shopper has an empty wardrobe, general styling advice will be returned
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
+- **What it does:** Adds a short caption that could go on the find post
+- **Inputs:** 
+     - `outfit` (str)
+     - `new_item` (dict)
 - **Returns:**
+     - two-to-four sentence caption
 - **When it has nothing:**
+     - If `outfit` is empty return a descriptive message 
 
 ---
 
