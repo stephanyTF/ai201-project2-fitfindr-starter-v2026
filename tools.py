@@ -24,8 +24,57 @@ import config  # noqa: F401 — you'll use this in search_listings
 from generate import generate
 from utils.data_loader import load_listings
 
+#added imports for clean description function
+import nltk #may have to pip install nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
 
 # ── Tool 1: search_listings ───────────────────────────────────────────────────
+#Added: Clean Desscription func
+
+def clean_description(description: str) -> set:
+    """
+    Clean the description string by removing punctuation and converting to lowercase.
+    Keeps only alphanumeric words
+    Keeps no phrases together like 'no rips' 
+    Removes stop words from the description string.
+
+
+    Args:
+        description: The description string to clean.
+
+    """
+
+    extra_stop_words = ["along", "sit", "sits", "fit", "fits", "like"]
+
+
+    # lowercasing  and keeps only alphanumeric  words
+    word_lst = [word.lower() for word in word_tokenize(description) if word.lower().isalnum()]
+
+    
+    #keep no phrases
+    n = len(word_lst)
+
+    for _ in range(n):
+        if word_lst[_] == "no":
+            next_word = word_lst[_+1]
+            word_lst.append(word_lst[_]+" "+next_word)
+            n-=1
+            word_lst.remove("no")
+            word_lst.remove(next_word)
+
+
+    #remove stop words (has to be after keeping the no phrases together since no is a stop word)
+    stop_words = set(stopwords.words('english'))
+    word_lst = [word for word in word_lst if word not in stop_words]
+
+    #filters out extra stop words
+    word_lst = [word for word in word_lst if word not in extra_stop_words]
+
+    return set(word_lst)
+
+
 
 def search_listings(
     description: str,
@@ -78,7 +127,30 @@ def search_listings(
     Test it from a terminal before you move on:
         python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
     """
-    # TODO: replace this with your implementation
+    # TODO: 
+    #1. Load every listing with load_listings().
+    clothes_listing = list(load_listings())
+    search_results_lst = []
+
+    #2. Filter by max_price and by size, when each is provided.
+    for listing in clothes_listing:
+        if max_price is not None and listing['price'] > max_price:
+            continue
+        if size is not None and size.lower() not in listing['size'].lower():
+            continue
+        #3. Score what's left by keyword overlap with `description`.
+        #apply a clean description function
+        
+        #Get keywords from the query's description:
+        description_keywords = set(description.lower().split())
+
+        #Get keywords from the listing's description:
+        listing_keywords = set(listing['description'].lower().split())
+
+        overlap = description_keywords.intersection(listing_keywords)
+        search_results_lst.append(listing)
+
+
     return []
 
 
