@@ -257,7 +257,7 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     if not outfit or not outfit.strip():
         return f"Oops Looks like we're missing our outfit. Try again. "
     #2. Build a prompt with the item details and the outfit.
-    prompt = f"Create a fit card caption in 2-4 sentences for this outfit: {outfit} using the item: {new_item['description']} The caption should read like a real post rather than a product description, mention the item and its price and platform once each, and be specific about the vibe. "
+    prompt = f"Create a fit card caption in 2-4 sentences for this outfit: {outfit} using the item: {new_item} The caption should read like a real post rather than a product description, mention the item and its price and platform once each, and be specific about the vibe. "
 
     #3. Call generate() and return the response.
     return generate(prompt)
