@@ -170,7 +170,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
 
         #4. Call search_listings() 
-        session["search_results"] = search_listings(session["parsed"])
+        session["search_results"] = search_listings(session["parsed"]["description"], session["parsed"]["size"], session["parsed"]["max_price"])
 
         #Handle empty search results
         if not session["search_results"]:
@@ -186,11 +186,12 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
             #7. Call create_fit_card() with the outfit and the item.
             session["fit_card"] = create_fit_card(session["outfit_suggestion"], session["selected_item"])
-        
+
+        return session
+
 
         # TODO: delete these two lines and build the loop.
         #session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
-        return session
 
 
 # ── running it directly ───────────────────────────────────────────────────────
