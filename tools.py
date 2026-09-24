@@ -201,7 +201,18 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
         python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
     """
     # TODO: replace this with your implementation
-    return ""
+    # 1. Check whether wardrobe['items'] is empty.
+    if not wardrobe['items']:
+        # 2. If it is, ask the model for general styling ideas for this item.
+        prompt = f"Give general styling ideas for this item: {new_item['description']}"
+        return generate(prompt)
+
+    # 3. If it isn't, format the wardrobe items into the prompt and ask for specific combinations.
+    wardrobe_items = "\n".join([f"- {item['description']}" for item in wardrobe['items']])
+    prompt = f"Suggest outfits using this new item: {new_item['description']} and the following wardrobe items:\n{wardrobe_items}"
+    
+
+    return generate(prompt)
 
 
 # ── Tool 3: create_fit_card ───────────────────────────────────────────────────
