@@ -137,23 +137,19 @@ def search_listings(
     search_results_lst = []
     score_listing_dict = {}
 
-    #2. Filter by max_price and by size, when each is provided.
-    if max_price is not None:
-        listings = [article for article in listings if article['price'] <= max_price]
-    if size is not None:
-        listings = [article for article in listings if size.lower() in article['size'].lower()]
 
-    #3. Score what's left by keyword overlap with `description`.
     description_keywords = clean_description(description)
 
     for article in listings:
+        #2. Filter by max_price and by size, when each is provided.
         if max_price is not None and article['price'] > max_price:
             continue
         if size is not None and size.lower() not in article['size'].lower():
             continue
-        #3a. Clean up `description`.
-        listing_keywords = clean_description(article['description'])
-        
+
+        #3. Score what's left by keyword overlap with `description`.
+        listing_keywords = clean_description(article['description']) #Clean up `description`.
+
         overlap = description_keywords.intersection(listing_keywords)
         
         #4. Drop anything scoring zero.
