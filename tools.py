@@ -208,7 +208,7 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
         return generate(prompt)
 
     # 3. If it isn't, format the wardrobe items into the prompt and ask for specific combinations.
-    wardrobe_items = "\n".join([f"- {item['description']}" for item in wardrobe['items']])
+    wardrobe_items = "\n".join([f"- {item['name']}" for item in wardrobe['items']])
     prompt = f"Suggest outfits using this new item: {new_item['description']} and the following wardrobe items:\n{wardrobe_items}"
     
 
