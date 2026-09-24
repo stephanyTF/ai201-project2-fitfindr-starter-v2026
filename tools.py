@@ -25,7 +25,7 @@ from generate import generate
 from utils.data_loader import load_listings
 
 #added imports for clean description function
-import nltk #may have to pip install nltk
+import nltk #already did pip install nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
@@ -138,20 +138,23 @@ def search_listings(
             continue
         if size is not None and size.lower() not in listing['size'].lower():
             continue
-        #3. Score what's left by keyword overlap with `description`.
-        #apply a clean description function
+        #2a. Clean up `description`.
+        description_keywords = clean_description(description)
+        listing_keywords = clean_description(listing['description'])
         
-        #Get keywords from the query's description:
-        description_keywords = set(description.lower().split())
-
-        #Get keywords from the listing's description:
-        listing_keywords = set(listing['description'].lower().split())
-
+        #3. Score what's left by keyword overlap with `description`.
         overlap = description_keywords.intersection(listing_keywords)
-        search_results_lst.append(listing)
+        listing['score'] = len(overlap)
+
+        #4. Drop anything scoring zero.
+        if listing['score'] > 0:
+            search_results_lst.append(listing)
 
 
-    return []
+    #5. Sort by score, highest first.
+    search_results_lst.sort(key=lambda x: x['score'], reverse=True)
+
+    return search_results_lst
 
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
