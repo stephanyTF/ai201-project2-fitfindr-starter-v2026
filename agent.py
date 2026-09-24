@@ -162,16 +162,35 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
     #2. Count the times round the loop, and call trace.check_iterations(count) on each one before you go again.
     count = 0
-    # while True:
-    #     count += 1
-    #     trace.check_iterations(count)
+    while True:
+        count += 1
+        trace.check_iterations(count)
 
-    #3. Parse the query into a description, a size, and a max_price.
-    session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
+        #3. Parse the query into a description, a size, and a max_price.
+        session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
 
-    # TODO: delete these two lines and build the loop.
-    session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
-    return session
+        #4. Call search_listings() 
+        session["search_results"] = search_listings(session["parsed"])
+
+        #Handle empty search results
+        if not session["search_results"]:
+            session["error"] = "No results found. Please try to ask a different question."
+            return session
+
+        else:
+            #5. Choose an item — the first result is fine. Put it in session["selected_item"].
+            session["selected_item"] = session["search_results"][0]
+
+            #6. Call suggest_outfit() with the selected item and the wardrobe.
+            session["outfit_suggestion"] = suggest_outfit(session["selected_item"], wardrobe)
+
+            #7. Call create_fit_card() with the outfit and the item.
+            session["fit_card"] = create_fit_card(session["outfit_suggestion"], session["selected_item"])
+        
+
+        # TODO: delete these two lines and build the loop.
+        #session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
+        return session
 
 
 # ── running it directly ───────────────────────────────────────────────────────
