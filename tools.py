@@ -49,7 +49,8 @@ def clean_description(description: str) -> set:
 
     """
 
-    extra_stop_words = ["along", "sit", "sits", "fit", "fits", "like"]
+    extra_stop_words = ["along", "sit", "sits", "fit", "fits", "like", "for",
+                        "more"]
 
 
     # lowercasing  and keeps only alphanumeric  words
