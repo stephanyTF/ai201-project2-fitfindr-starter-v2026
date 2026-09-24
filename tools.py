@@ -28,8 +28,8 @@ from utils.data_loader import load_listings
 import nltk #already did pip install nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-# nltk.download('punkt')
-# nltk.download('punkt_tab')
+nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 
@@ -59,12 +59,13 @@ def clean_description(description: str) -> set:
     n = len(word_lst)
 
     for _ in range(n):
-        if word_lst[_] == "no":
+        if word_lst[_] == "no" and _ != n-1:
             next_word = word_lst[_+1]
             word_lst[_+1]= "no" +" "+ next_word
 
-    if "no" in word_lst:
-        word_lst.remove("no")
+    # if "no" in word_lst:
+    #     word_lst.remove("no")
+    word_lst = [word for word in word_lst if word not in ("no",)]
 
 
     #remove stop words (has to be after keeping the no phrases together since no is a stop word)
@@ -73,7 +74,7 @@ def clean_description(description: str) -> set:
 
     #filters out extra stop words
     word_lst = [word for word in word_lst if word not in extra_stop_words]
-    print(set(word_lst))
+    #print(set(word_lst))
 
     return set(word_lst)
 
@@ -132,37 +133,41 @@ def search_listings(
     """
     # TODO: 
     #1. Load every listing with load_listings().
-    clothes_listing = list(load_listings())
+    listings = list(load_listings())
     search_results_lst = []
+    score_listing_dict = {}
 
     #2. Filter by max_price and by size, when each is provided.
-    for listing in clothes_listing:
-        if max_price is not None and listing['price'] > max_price:
+
+    #3. Score what's left by keyword overlap with `description`.
+    description_keywords = clean_description(description)
+
+    for article in listings:
+        if max_price is not None and article['price'] > max_price:
             continue
-        if size is not None and size.lower() not in listing['size'].lower():
+        if size is not None and size.lower() not in article['size'].lower():
             continue
-        #2a. Clean up `description`.
-        description_keywords = clean_description(description)
-        listing_keywords = clean_description(listing['description'])
+        #3a. Clean up `description`.
+        listing_keywords = clean_description(article['description'])
         
-        #3. Score what's left by keyword overlap with `description`.
         overlap = description_keywords.intersection(listing_keywords)
-        listing['score'] = len(overlap)
-
+        
         #4. Drop anything scoring zero.
-        if listing['score'] > 0:
-            search_results_lst.append(listing)
+        if len(overlap) > 0:
+            #add to the listing to the dictionary
+            score_listing_dict[article['id']] = len(overlap)
+            search_results_lst.append(article)
 
 
-    #5. Sort by score, highest first.
-    if len(search_results_lst) > 1:
-        search_results_lst.sort(key=lambda x: x['score'], reverse=True)
-    elif len(search_results_lst) == 1:
-        search_results_lst = [search_results_lst[0]]
-    else:
-        search_results_lst = []
+    #5. Sort by score from the score listing dict, highest first.
 
-    return search_results_lst
+    #fill up search results from clothes listing if listing is in score_listing_dict
+    search_results_lst = [article for article in listings if article['id'] in score_listing_dict]
+
+    #sort search results by score, highest first
+    search_results_lst.sort(key=lambda x: score_listing_dict[x['id']], reverse=True)
+
+    return search_results_lst[:config.SEARCH_RESULT_LIMIT]
 
 
 # ── Tool 2: suggest_outfit ────────────────────────────────────────────────────
