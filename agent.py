@@ -13,11 +13,15 @@ Build and test your three tools in `tools.py` first. Then come here.
     python agent.py          runs both example paths below
 """
 
+from flask import session
+
 import config
 import trace
 from tools import search_listings, suggest_outfit, create_fit_card
 from generate import ModelUnavailable
 
+#added for parse_query
+import re
 
 # ── session state ─────────────────────────────────────────────────────────────
 
@@ -48,6 +52,54 @@ def new_session(query: str, wardrobe: dict) -> dict:
 
 
 # ── planning loop ─────────────────────────────────────────────────────────────
+
+def parse_query(query: str) -> dict:
+    """
+    Parse the user's query into a description, a size, and a max_price using regex.
+
+    Args:
+        query: the user's input string (e.g. "vintage graphic tee under $30, size M").
+
+    Returns:
+        A dict with keys "description", "size", and "max_price".
+    """
+    description = ""
+    size = None
+    max_price = None
+
+
+   #find price
+    price_pattern = r"\d+"
+    price_match = re.search(price_pattern,query)
+    if price_match:
+        max_price = int(price_match.group())
+
+    #find size
+    size_lst = ["small", "medium", "large", "s", "m", "l", "xxl", "xxs", "xs", "xl"]
+    size_pattern = r"\b(" + "|".join(size_lst) + r")\b"
+
+    lower_cased_q = " ".join([w.lower() for w in query.split()])
+    size_match = re.search(size_pattern,  lower_cased_q)
+    if size_match:
+        size = size_match.group()
+
+
+    #get descr
+    q_lst = [w.lower() for w in query.split()]
+
+    if str(max_price) in q_lst:
+        q_lst.remove(str(max_price))
+    if size in q_lst:
+        q_lst.remove(size)
+
+    description = " ".join(q_lst)
+
+        
+    return {
+        "description": description,
+        "size": size,
+        "max_price": max_price,
+    }
 
 def run_agent(query: str, wardrobe: dict) -> dict:
     """
@@ -105,7 +157,17 @@ def run_agent(query: str, wardrobe: dict) -> dict:
       • A handler for ModelUnavailable, so a bad key produces a message rather
         than a stack trace. The import is already at the top of this file.
     """
+    #1. Start a session with new_session().
     session = new_session(query, wardrobe)
+
+    #2. Count the times round the loop, and call trace.check_iterations(count) on each one before you go again.
+    count = 0
+    # while True:
+    #     count += 1
+    #     trace.check_iterations(count)
+
+    #3. Parse the query into a description, a size, and a max_price.
+    session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
 
     # TODO: delete these two lines and build the loop.
     session["error"] = "The planning loop isn't built yet — see the TODO in agent.py."
