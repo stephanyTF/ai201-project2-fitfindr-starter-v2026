@@ -28,6 +28,9 @@ from utils.data_loader import load_listings
 import nltk #already did pip install nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+# nltk.download('punkt')
+# nltk.download('punkt_tab')
+nltk.download('stopwords')
 
 
 # ── Tool 1: search_listings ───────────────────────────────────────────────────
@@ -52,17 +55,16 @@ def clean_description(description: str) -> set:
     # lowercasing  and keeps only alphanumeric  words
     word_lst = [word.lower() for word in word_tokenize(description) if word.lower().isalnum()]
 
-    
     #keep no phrases
     n = len(word_lst)
 
     for _ in range(n):
         if word_lst[_] == "no":
             next_word = word_lst[_+1]
-            word_lst.append(word_lst[_]+" "+next_word)
-            n-=1
-            word_lst.remove("no")
-            word_lst.remove(next_word)
+            word_lst[_+1]= "no" +" "+ next_word
+
+    if "no" in word_lst:
+        word_lst.remove("no")
 
 
     #remove stop words (has to be after keeping the no phrases together since no is a stop word)
@@ -71,6 +73,7 @@ def clean_description(description: str) -> set:
 
     #filters out extra stop words
     word_lst = [word for word in word_lst if word not in extra_stop_words]
+    print(set(word_lst))
 
     return set(word_lst)
 
@@ -152,7 +155,12 @@ def search_listings(
 
 
     #5. Sort by score, highest first.
-    search_results_lst.sort(key=lambda x: x['score'], reverse=True)
+    if len(search_results_lst) > 1:
+        search_results_lst.sort(key=lambda x: x['score'], reverse=True)
+    elif len(search_results_lst) == 1:
+        search_results_lst = [search_results_lst[0]]
+    else:
+        search_results_lst = []
 
     return search_results_lst
 
