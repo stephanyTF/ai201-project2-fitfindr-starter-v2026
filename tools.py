@@ -209,7 +209,7 @@ def suggest_outfit(new_item: dict, wardrobe: dict) -> str:
 
     # 3. If it isn't, format the wardrobe items into the prompt and ask for specific combinations.
     wardrobe_items = "\n".join([f"- {item['name']}" for item in wardrobe['items']])
-    prompt = f"Suggest outfits using this new item: {new_item['description']} and the following wardrobe items:\n{wardrobe_items}"
+    prompt = f"Suggest one outfit using this new item: {new_item['description']} and the following wardrobe items:\n{wardrobe_items}"
     
 
     return generate(prompt)
@@ -252,4 +252,14 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
     """
     # TODO: replace this with your implementation
-    return ""
+
+    #1. Guard against an empty or whitespace-only `outfit`.
+    if not outfit or not outfit.strip():
+        return f"Oops Looks like we're missing our outfit. Try again. "
+    #2. Build a prompt with the item details and the outfit.
+    prompt = f"Create a fit card caption in 2-4 sentences for this outfit: {outfit} using the item: {new_item['description']} The caption should read like a real post rather than a product description, mention the item and its price and platform once each, and be specific about the vibe. "
+
+    #3. Call generate() and return the response.
+    return generate(prompt)
+
+   
