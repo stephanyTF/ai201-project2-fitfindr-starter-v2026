@@ -170,7 +170,8 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
     #4. Call search_listings()
     steps += 1
-    trace.check_iterations(steps) 
+    trace.check_iterations(steps)
+    #print(f"Searching for: {session['parsed']['description']} (Size: {session['parsed']['size']}, Max Price: {session['parsed']['max_price']})")
     session["search_results"] = search_listings(session["parsed"]["description"], session["parsed"]["size"], session["parsed"]["max_price"])
 
     #Handle empty search results
