@@ -114,8 +114,12 @@ To start, the shopper describes their clothing item with details like color, sty
 **How the query is parsed:** Regex is the easiest to separate the query into item description and the other optional fields (size and max_price if given) because it can be done without a model call. However it's incapable of handling varied phrasing like "under $30" since there's no explicit phrase in the listing that compares eventhough there are prices under $30. To accomodate, potentially there could be a regex match for phrases similar to those and set a condition to filter items by the preferred price.
 
 **What moves through the session:** <!-- which fields, in what order -->
+     
      1. `search_results` are returned in the session["search_results"] and if not empty, given to `suggest_outfit`
+
      2. Take the first item of the list (session["search_results"][0]) and save it as session["selected_item"]
+
+
 
 
 ---
@@ -130,24 +134,40 @@ To start, the shopper describes their clothing item with details like color, sty
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'Want oversized shirt or jacket. Bonus for a cute or cozy style. Nothing over $40'
 
 ```
 
 **The three tools, tested one at a time**
 
 ```
-$ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
+$ python -c "from tools import search_listings; print(search_listings('want oversized shirt or jacket. bonus for a cute or cozy style. nothing over $40', max_price=40))"
 
 ```
 
 ```
 $ python -c "from tools import suggest_outfit; ..."
 
+Found:    Oversized Flannel Shirt — Plaid Red/Black — $22.0 on thredUp
+
+  Outfit:   Here is a cool, textured layered outfit utilizing your new flannel:
+
+**The Outfit:**
+*   **Base:** White ribbed tank top tucked into the **Baggy straight-leg jeans, dark wash** (accented with the **Brown leather belt**).
+*   **Layer 1:** The **Classic oversized flannel** worn open over the tank top. 
+*   **Layer 2:** Drape the **Oversized grey crewneck sweatshirt** casually over your shoulders, letting the sleeves hang loosely in the front (or wear it fullylayered *over* the flannel if it's chilly).
+*   **Shoes:** **Chunky white sneakers** to balance the baggy denim.
+*   **Accessories:** **Black crossbody bag**.
+
+**Why it works:**
+This look plays with proportions by pairing the baggy dark wash jeans with the oversized flannel and crewneck. Layering the grey sweatshirt over the flannel creates a great textural and color contrast (grey against the flannel pattern), while the white tank and sneakers keep the overall vibe fresh and intentionally styled rather than bulky.
+
 ```
 
 ```
 $ python -c "from tools import create_fit_card; ..."
+
+Fit card: Leveling up grunge-streetwear vibes with this effortlessly layered look centered around a Woolrich oversized flannel scored for just $22 on thredUp. I love playing with proportions by pairing baggy dark wash denim with an open plaid shirt and a tossed-over grey crewneck for extra texture. Finished with a white tank and chunky sneakers, this fit is the ultimate casual cool-girl uniform.
 
 ```
 
@@ -162,17 +182,17 @@ $ python -c "from tools import create_fit_card; ..."
      "I gave Claude my search_listings spec. It returned None on no match
      instead of an empty list, so I changed it" is the level we want. -->
 
-**Moment 1**
+**Moment 1 Improving filtering item's description in `tools.py::search_listings`**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude on how to improve the filtering for the item description
+- *What came back:* A list of revisions of how to remove the redundant code and make fixes to a bug
+- *What I changed:* I applied the suggested changes and added more words to filter out of the descriptions based on the test queries I did. 
 
-**Moment 2**
+**Moment 2 Filing out run_agent() in agent.py** 
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I had GitHub CoPilot help set up the code lines for each of the steps 
+- *What came back:* It introduced a parse_query helper function with a regex pattern matching
+- *What I changed:* I changed the regex pattern matching to recognize the description, price, and size in more varied queries. 
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
