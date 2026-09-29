@@ -28,9 +28,9 @@ from utils.data_loader import load_listings
 import nltk #already did pip install nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-nltk.download('punkt')
-nltk.download('punkt_tab')
-nltk.download('stopwords')
+# nltk.download('punkt') #redownload again if new system
+# nltk.download('punkt_tab')
+# nltk.download('stopwords')
 
 
 # ── Tool 1: search_listings ───────────────────────────────────────────────────
