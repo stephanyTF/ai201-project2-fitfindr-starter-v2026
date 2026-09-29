@@ -172,7 +172,14 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     steps += 1
     trace.check_iterations(steps)
     #print(f"Searching for: {session['parsed']['description']} (Size: {session['parsed']['size']}, Max Price: {session['parsed']['max_price']})")
-    session["search_results"] = search_listings(session["parsed"]["description"], session["parsed"]["size"], session["parsed"]["max_price"])
+    #session["search_results"] = search_listings(session["parsed"]["description"], session["parsed"]["size"], session["parsed"]["max_price"])
+    #call the mcp version of search_listings
+    from mcp_client import call_tool
+    session["search_results"] = call_tool("search_listings", {
+        "description": session["parsed"]["description"],
+        "size": session["parsed"]["size"],
+        "max_price": session["parsed"]["max_price"],
+    })
 
     #Handle empty search results
     if not session["search_results"]:
