@@ -180,11 +180,15 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         "size": session["parsed"]["size"],
         "max_price": session["parsed"]["max_price"],
     })
-
+    #Handle empty wardrobe
+    if wardrobe.get('items') == []:
+        session["error"] = "No wardrobe available. Please add some items to your wardrobe."
+        return session
     #Handle empty search results
     if not session["search_results"]:
         session["error"] = "No results found. Please try to ask a different question."
         return session
+    
 
     else:
         #5. Choose an item — the first result is fine. Put it in session["selected_item"].
