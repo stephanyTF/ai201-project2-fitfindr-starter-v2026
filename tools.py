@@ -20,6 +20,7 @@ That last line is what your loop branches on. "Returns a list" earns nothing —
 the description has to say what is *in* the list.
 """
 
+
 import config  # noqa: F401 — you'll use this in search_listings
 from generate import generate
 from utils.data_loader import load_listings
@@ -49,7 +50,7 @@ def clean_description(description: str) -> set:
 
     """
 
-    extra_stop_words = ["along", "sit", "sits", "fit", "fits", "like", "for",
+    extra_stop_words = ["i", "like", "to", "find", "maybe", "in", "along", "sit", "sits", "fit", "fits", "like", "for",
                         "more"]
 
 
@@ -138,8 +139,8 @@ def search_listings(
     search_results_lst = []
     score_listing_dict = {}
 
-
     description_keywords = clean_description(description)
+    #description_keywords = set(description) #allready cleaned just need to convert to set for intersection
 
     for article in listings:
         #2. Filter by max_price and by size, when each is provided.
@@ -150,9 +151,11 @@ def search_listings(
 
         #3. Score what's left by keyword overlap with `description`.
         listing_keywords = clean_description(article['description']) #Clean up `description`.
+        print(f"Listing keywords for article '{article['description']}': {listing_keywords}")
 
         overlap = description_keywords.intersection(listing_keywords)
-        
+        #print(f"Overlap for article '{article['description']}': {overlap}")
+
         #4. Drop anything scoring zero.
         if len(overlap) > 0:
             #add to the listing to the dictionary
