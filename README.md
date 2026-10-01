@@ -281,8 +281,18 @@ Channeling ultimate pop-star-off-duty energy with this baggy denim and fitted ba
 | 5 | The Outfit is Fit for the Budget | 5/5  | MET | 5 out of 5 times, the items suggested matched the given price and never went over. |
 
 **Diagnoses**
+Side by side comparison of fit cards for same query: Query: `vintage graphic tee under $30`
 
+Try 1- "Mentioning of the user selling the baby tee"
+```
+Channeling ultimate pop-star-off-duty energy with this baggy denim and fitted baby tee combo. Toss on a zip hoodie and chunky kicks for that effortless 2000s proportion play. Grab this Y2K Butterfly Baby Tee over on my Depop for just $18 to complete your retro rotation! 🦋✨
+```
 
+Try 2- "Mentioned that the user bought the baby tee"
+```
+Serving ultimate 2nd-millennium nostalgia with this butterfly baby tee, baggy dark wash denim, and chunky kicks. Layered it with an unzipped cropped hoodie for that quintessential off-duty streetwear vibe. Snagged this butterfly tee for just $18 on Depop and it’s the ultimate Y2K staple!
+```
+4 times, the fit card content was similar to Try 2 in mentioning how the user purchased it off from a platform while the fit card from Try 1 intended to sell the outfit on the platform for that price. The reason may be that in the system prompt there was no strict guard on the purpose of the fit card whether it was to sell the item or to show off a recently bought item. 
 
 ---
 
@@ -302,11 +312,41 @@ Channeling ultimate pop-star-off-duty energy with this baggy denim and fitted ba
 
 ```
 
+[1] parse_query
+      in:  vintage graphic tee under $30
+      out:  tee graphic 30 vintage (Size: None, Max Price: 30)
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 8 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Graphic Hoodie — Faded Black … +5 more
+      →    8 match(es)
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  dict with keys: selected_item
+      out: **The Outfit:** *   **Top:** Super cute early 2000s baby tee with butterfly graphic *   **Bottoms:** Baggy str…
+[5] create_fit_card
+      in:  dict with keys: outfit, item
+      out: Serving major 2000s off-duty model energy with this tight-top-baggy-bottom proportion play. Paired the ultimat…
+  try 5: completed — fit card 301 chars
+
+
 ```
 
 **Empty search**
 
 ```
+[1] parse_query
+      in:  ...
+      out:   (Size: None, Max Price: None)
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+      →    0 match(es)
+[3] branch
+      →    No search results found: stopping before suggest_outfit
+
+  No results found. Please try to ask a different question.
+
 
 ```
 
