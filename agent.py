@@ -221,11 +221,11 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             f"Please check your API key and try again with the same query."
             f"\n What the service returned: {exec}"
         )
-        
+
         trace.step("model unavailable", note="Stopped but search results kept")
     
 
-        return session
+    return session
 
 # ── running it directly ───────────────────────────────────────────────────────
 
