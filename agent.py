@@ -162,17 +162,18 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         than a stack trace. The import is already at the top of this file.
     """
 
+    #1. Start a session with new_session().
+    session = new_session(query, wardrobe)
+    #2. Count the times round the loop, and call trace.check_iterations(count) on each one before you go again.
+    steps = 0
+
     try:
-        #1. Start a session with new_session().
-        session = new_session(query, wardrobe)
-
-        #2. Count the times round the loop, and call trace.check_iterations(count) on each one before you go again.
-        steps = 0
-
+        
         #3. Parse the query into a description, a size, and a max_price.
         steps += 1
         trace.check_iterations(steps)
-        session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
+        parsed = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
+        session["parsed"] = parsed
         trace.step("parse_query", inputs=query, returned=f" {session["parsed"]['description']} (Size: {session["parsed"]['size']}, Max Price: {session["parsed"]['max_price']})")
         
         #4. Call search_listings()
@@ -183,42 +184,46 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         
         #call the mcp version of search_listings
         from mcp_client import call_tool
-        session["search_results"] = call_tool("search_listings", {
+        results = call_tool("search_listings", {
             "description": session["parsed"]["description"],
             "size": session["parsed"]["size"],
             "max_price": session["parsed"]["max_price"],
         })
-        trace.step("search_listings (via MCP)", inputs={
-           session['parsed']['description']
-        },
-          returned=session["search_results"],
-          note=f"{len(session['search_results'])} match(es)")
+        session["search_results"] = results
 
+        trace.step("search_listings (via MCP)", inputs=parsed,
+          returned=results,
+          note=f"{len(results)} match(es)")
+
+
+
+         # ----BRANCH--------
         #Handle empty wardrobe
         if wardrobe.get('items') == []:
             session["error"] = "No wardrobe available. Please add some items to your wardrobe."
             return session
         #Handle empty search results
-        if not session["search_results"]:
+        if not results:
             session["error"] = "No results found. Please try to ask a different question."
+            trace.step("branch", note="No search results found: stopping before suggest_outfit")
             return session     
 
         else:
             #5. Choose an item — the first result is fine. Put it in session["selected_item"].
             steps += 1
             trace.check_iterations(steps) 
-            session["selected_item"] = session["search_results"][0]
+            session["selected_item"] = results[0]
             
-            trace.step("select_item", inputs=session["search_results"][0], returned=session["selected_item"])
+            trace.step("select_item", returned=session["selected_item"]) 
 
 
 
             #6. Call suggest_outfit() with the selected item and the wardrobe.
             steps += 1
             trace.check_iterations(steps)
-            session["outfit_suggestion"] = suggest_outfit(session["selected_item"], wardrobe)
+            session["outfit_suggestion"] = suggest_outfit(session["selected_item"], session["wardrobe"]) #wardrobe before
             
-            trace.step("suggest_outfit", inputs={"selected_item": session["selected_item"], "wardrobe": wardrobe}, returned=session["outfit_suggestion"])
+            trace.step("suggest_outfit", inputs={"selected_item": session["selected_item"]}, returned=session["outfit_suggestion"])
 
 
 
