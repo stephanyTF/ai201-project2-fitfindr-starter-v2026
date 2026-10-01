@@ -92,6 +92,10 @@ def parse_query(query: str) -> dict:
     if size in q_lst:
         q_lst.remove(size)
 
+    #clean description with importing clean_description from tools
+    from tools import clean_description
+    q_lst = list(clean_description(" ".join(q_lst)))
+
     description = " ".join(q_lst)
 
         
@@ -169,12 +173,14 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         steps += 1
         trace.check_iterations(steps)
         session["parsed"] = parse_query(query)  # Implement this function to extract description, size, and max_price from the query.
-
+        trace.step("parse_query", inputs=query, returned=f" {session["parsed"]['description']} (Size: {session["parsed"]['size']}, Max Price: {session["parsed"]['max_price']})")
+        
         #4. Call search_listings()
         steps += 1
         trace.check_iterations(steps)
         #print(f"Searching for: {session['parsed']['description']} (Size: {session['parsed']['size']}, Max Price: {session['parsed']['max_price']})")
         #session["search_results"] = search_listings(session["parsed"]["description"], session["parsed"]["size"], session["parsed"]["max_price"])
+        
         #call the mcp version of search_listings
         from mcp_client import call_tool
         session["search_results"] = call_tool("search_listings", {
@@ -182,6 +188,12 @@ def run_agent(query: str, wardrobe: dict) -> dict:
             "size": session["parsed"]["size"],
             "max_price": session["parsed"]["max_price"],
         })
+        trace.step("search_listings (via MCP)", inputs={
+           session['parsed']['description']
+        },
+          returned=session["search_results"],
+          note=f"{len(session['search_results'])} match(es)")
+
         #Handle empty wardrobe
         if wardrobe.get('items') == []:
             session["error"] = "No wardrobe available. Please add some items to your wardrobe."
@@ -189,28 +201,34 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         #Handle empty search results
         if not session["search_results"]:
             session["error"] = "No results found. Please try to ask a different question."
-            return session
-        
+            return session     
 
         else:
             #5. Choose an item — the first result is fine. Put it in session["selected_item"].
             steps += 1
             trace.check_iterations(steps) 
             session["selected_item"] = session["search_results"][0]
+            
+            trace.step("select_item", inputs=session["search_results"][0], returned=session["selected_item"])
+
 
 
             #6. Call suggest_outfit() with the selected item and the wardrobe.
             steps += 1
             trace.check_iterations(steps)
-            #Check if model is available before calling suggest_outfit
-
             session["outfit_suggestion"] = suggest_outfit(session["selected_item"], wardrobe)
+            
+            trace.step("suggest_outfit", inputs={"selected_item": session["selected_item"], "wardrobe": wardrobe}, returned=session["outfit_suggestion"])
+
 
 
             #7. Call create_fit_card() with the outfit and the item.
             steps += 1
             trace.check_iterations(steps)
             session["fit_card"] = create_fit_card(session["outfit_suggestion"], session["selected_item"])
+
+            trace.step("create_fit_card", inputs={"outfit": session["outfit_suggestion"], "item": session["selected_item"]}, returned=session["fit_card"])
+
 
 
     except ModelUnavailable:
