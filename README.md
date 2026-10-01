@@ -350,11 +350,9 @@ Serving ultimate 2nd-millennium nostalgia with this butterfly baby tee, baggy da
 
 ```
 
-**On the MCP move:** <!-- what changed in your code, and whether anything
-behaved differently afterwards. If the rewire didn't work, say exactly where it
-broke — the error text and the last thing that worked. That earns the point in
-full. -->
+**On the MCP move:** <!-- what changed in your code, and whether anything behaved differently afterwards. If the rewire didn't work, say exactly where it broke — the error text and the last thing that worked. That earns the point in full. -->
 
+In my code, the run_agent() doesn't call the search_listings function directly anymore instead it uses the call_tool from the MCP client to call. The system behavior returns doesn't change from before the move. 
 
 
 ---
