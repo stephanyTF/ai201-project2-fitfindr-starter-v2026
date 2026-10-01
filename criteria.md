@@ -39,7 +39,7 @@ Given a query that matches no listings, the agent stops before calling
 
 ---
 
-## 3. Something about state
+## 3. The right item is talked about. 
 
 <!-- YOU WRITE THIS ONE.
 
@@ -82,7 +82,7 @@ Ensures the system is making suggestion on the correct best matching item. Needs
 
 
 **Why this target:**
-   It should also come out differently for different inputs and have some variance even for the same item since postings are usually creative and unique to the item. It's 4/5 to add in some variability since the model's output can't always be expected.
+   It should come out differently for different inputs and have some variance even for the same item since postings are usually creative and unique to the item. It's 4/5 to add in some variability since the model's exact output can't always be guaranteed.
 
 
 ---
