@@ -151,7 +151,7 @@ def search_listings(
 
         #3. Score what's left by keyword overlap with `description`.
         listing_keywords = clean_description(article['description']) #Clean up `description`.
-        print(f"Listing keywords for article '{article['description']}': {listing_keywords}")
+        #print(f"Listing keywords for article '{article['description']}': {listing_keywords}")
 
         overlap = description_keywords.intersection(listing_keywords)
         #print(f"Overlap for article '{article['description']}': {overlap}")
