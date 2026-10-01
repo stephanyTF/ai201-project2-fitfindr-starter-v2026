@@ -214,18 +214,43 @@ Fit card: Leveling up grunge-streetwear vibes with this effortlessly layered loo
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes | 4/5 |  PASS | PASS  | PASS  |  PASS | PASS  | MET (5/5)  |
+| 2. Impossible query stops early | 5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 3. The right item is talked about. |5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 4. Fit Card Caption is Unique and True | 4/5 | FAIL | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 5. The Outfit is Fit for the Budget | 4/5 | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+
+
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
 ```
+Produced from agent.py::run_agent
 
+- Query: `vintage graphic tee under $30`
+- Wardrobe: example
+
+Output: 
+Here is a quintessential Y2K-inspired outfit using the butterfly baby tee:
+
+**The Outfit:**
+*   **Top:** Super cute early 2000s baby tee with butterfly graphic
+*   **Bottoms:** Baggy straight-leg jeans (dark wash)
+*   **Layer (for over top/carrying):** Black cropped zip hoodie 
+*   **Footwear:** Chunky white sneakers
+*   **Accessories:** Black crossbody bag
+
+**Why it works:**
+This plays on the classic early 2000s proportion play: a super fitted, cropped top balanced with baggy, low-ish slung dark wash denim. The chunky white sneakers add that authentic retro skater/pop-star-off-duty vibe. Toss the black cropped zip hoodie over your shoulders or wear it half-zipped to lean fully into the Y2K aesthetic, and use the black crossbody bag to pull the dark accents together.
+
+
+Fit card:
+
+Channeling ultimate pop-star-off-duty energy with this baggy denim and fitted baby tee combo. Toss on a zip hoodie and chunky kicks for that effortless 2000s proportion play. Grab this Y2K Butterfly Baby Tee over on my Depop for just $18 to complete your retro rotation! 🦋✨
 ```
+
+
 
 ---
 
@@ -249,11 +274,11 @@ that produced it:
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 |  A matching query completes all three tools | 4/5 | MET  | All appropriate queries ran were able to call all 3 tools for 5/5 times. |
+| 2 | An impossible query stops before the second tool | 5/5 | MET | For query that couldn't be answered, the system refused to answer 5 out of 5 times.  |
+| 3 | The right item is talked about.  | 5/5 | MET | The selected item that best match the query was talked about was carried over in the outfit suggestion and fit card |
+| 4 | Fit Card Caption is Unique and True  | 4/5 | MET | Eventhough the fit card was unique and matched the outfit suggestion 4 out of 5 times, there's a change in the purpose of the fit card that should be looked into. 4 times, the fit card mentioned how the user purchased it off from a platform while 1 fit card intended to sell the outfit on the platform for that price. |
+| 5 | The Outfit is Fit for the Budget | 5/5  | MET | 5 out of 5 times, the items suggested matched the given price and never went over. |
 
 **Diagnoses**
 
