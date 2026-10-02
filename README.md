@@ -217,7 +217,7 @@ Fit card: Leveling up grunge-streetwear vibes with this effortlessly layered loo
 | 1. Matching query completes | 4/5 |  PASS | PASS  | PASS  |  PASS | PASS  | MET (5/5)  |
 | 2. Impossible query stops early | 5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
 | 3. The right item is talked about. |5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
-| 4. Fit Card Caption is Unique and True | 4/5 | FAIL | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 4. Fit Card Caption is Unique and True | 4/5 | FAIL | PASS  | PASS  | PASS  |PASS  | MET (4/5) |
 | 5. The Outfit is Fit for the Budget | 4/5 | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
 
 
@@ -364,21 +364,21 @@ In my code, the run_agent() doesn't call the search_listings function directly a
 
      `python run_eval.py --label after` -->
 
-**What I changed:**
+**What I changed:** Changed the prompt in the tools.py::create_fit_card() to specify that the user was sharing an item that they recently bought
 
-**Which failure it was meant to fix:**
+**Which failure it was meant to fix:** Avoid sharing fit posts that looked like the user was trying to sell the item when it was meant to show off an item they found. 
 
 ### Run Log — After
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Matching query completes | 4/5 |  PASS | PASS  | PASS  |  PASS | PASS  | MET (5/5)  |
+| 2. Impossible query stops early | 5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 3. The right item is talked about. |5/5  | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 4. Fit Card Caption is Unique and True | 4/5 | PASS | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
+| 5. The Outfit is Fit for the Budget | 4/5 | PASS  | PASS  | PASS  | PASS  |PASS  | MET (5/5) |
 
-**Did it help, and how do I know:**
+**Did it help, and how do I know:** Adding specifications to the prompt helped ensure that the fit card fufilled its criteria in being true to its purpose by always accurately being about the user's fashion find (not trying to sell) and this was proven 5 out of 5 times for the same prompt
 
 <!-- If it made things worse, say that. Honestly reported, that earns full
      credit and is more interesting than one that worked. -->
@@ -389,41 +389,48 @@ In my code, the run_agent() doesn't call the search_listings function directly a
 
 ## What's Still Broken
 
+Below were the features I would like to have done but ran out of time. 
+- Including the item's title and tags in the listings to match the query against since sometimes their key phrases weren't mentioned in the description
+- Adding in more flexible regex that can catch key words in larger words like "vintage" in "vintage-style" or separate out dash characters 
+
 <!-- For each criterion still missed: what you'd do, and why you stopped where
      you did. "I ran out of time" is fine if it's true. Pretending nothing is
      left is not. -->
 
+<!-- 
 
 
-<!-- ═════════════════════════════════════════════════════════════════════
+
+
+═════════════════════════════════════════════════════════════════════
 
      SUBMISSION CHECKLIST — unit 3
 
-       [ ] criteria.md has five numbered criteria, each with a target
-       [ ] Each criterion has a reason underneath it
-       [ ] All five unit 3 sections above have real content
-       [ ] Tool Inventory: all three tools, inputs WITH TYPES, a specific
+       [x] criteria.md has five numbered criteria, each with a target
+       [x] Each criterion has a reason underneath it
+       [x] All five unit 3 sections above have real content
+       [x] Tool Inventory: all three tools, inputs WITH TYPES, a specific
            return value, and the empty case
-       [ ] Planning Loop names the branch rule and agent.py::run_agent
-       [ ] Sample Run: one full query plus the three per-tool tests, as text
-       [ ] At least four new commits
-       [ ] Repository URL submitted — WRITE IT DOWN, you submit the same one
+       [x] Planning Loop names the branch rule and agent.py::run_agent
+       [x] Sample Run: one full query plus the three per-tool tests, as text
+       [x] At least four new commits
+       [x] Repository URL submitted — WRITE IT DOWN, you submit the same one
            next unit
 
      SUBMISSION CHECKLIST — unit 4
 
-       [ ] mcp_server.py exists with one tool registered
+       [x] mcp_server.py exists with one tool registered
            (or a written record of exactly where the rewire broke)
-       [ ] Run Log — Before, five criteria, five tries each
-       [ ] Real output pasted underneath, naming file and function
-       [ ] A verdict on every criterion
-       [ ] A diagnosis for every miss, naming a place AND a mechanism
-       [ ] Loop Trace, with the MCP call visible in it
-       [ ] All three failure modes triggered and handled
-       [ ] One improvement, with Run Log — After in the same format
-       [ ] What's Still Broken
-       [ ] At least four new commits
-       [ ] The SAME repository URL as last unit
+       [x] Run Log — Before, five criteria, five tries each
+       [x] Real output pasted underneath, naming file and function
+       [x] A verdict on every criterion
+       [x] A diagnosis for every miss, naming a place AND a mechanism
+       [x] Loop Trace, with the MCP call visible in it
+       [x] All three failure modes triggered and handled
+       [x] One improvement, with Run Log — After in the same format
+       [x] What's Still Broken
+       [x] At least four new commits
+       [x] The SAME repository URL as last unit
 
      Do not delete and recreate this repository. Your commit history is what
      shows your criteria existed before your results did.
